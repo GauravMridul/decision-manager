@@ -1,0 +1,151 @@
+basePath: /decision-manager
+definitions:
+  decision_manager_request_dto.TriggerDecisionRequest:
+    properties:
+      applicationId:
+        example: APP123456
+        type: string
+      businessType:
+        example: Personal Loan
+        type: string
+      customerId:
+        example: CUST123456
+        type: string
+      customerType:
+        example: Personal Loan
+        type: string
+      leadId:
+        example: 00Qtu1587ebf123456
+        type: string
+      loanCategory:
+        example: Personal Loan
+        type: string
+      partnerName:
+        example: Samsung
+        type: string
+      productLine:
+        example: Personal Loan
+        type: string
+      salesChannelPartnerName:
+        example: ""
+        type: string
+      sourcingChannel:
+        example: ""
+        type: string
+      nameOfConsolidator:
+        example: ""
+        type: string
+      programType:
+        example: Repeat
+        type: string
+      sourcingProgram:
+        example: Personal Loan
+        type: string
+      stage:
+        example: Kyc
+        type: string
+      workflowId:
+        example: 123e4567-e89b-12d3-a456-426614174000
+        type: string
+    required:
+    - applicationId
+    - customerId
+    - leadId
+    - partnerName
+    - stage
+    - workflowId
+    type: object
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: Swagger UI for decision manager Microservice.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Swagger UI
+  version: "1.0"
+paths:
+  /health:
+    get:
+      consumes:
+      - application/json
+      description: Returns version of the application
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Health Check API
+      tags:
+      - Decision Manager
+  /v1/hello:
+    get:
+      consumes:
+      - application/json
+      description: Returns a Hello World message
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Hello World API
+      tags:
+      - Decision Manager
+  /v1/trigger-decision:
+    post:
+      consumes:
+      - application/json
+      description: Triggers a decisioning process with the provided parameters
+      parameters:
+      - description: Sequence details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/decision_manager_request_dto.TriggerDecisionRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: BadRequest
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: NotFound
+        "500":
+          description: InternalServerError
+      security:
+      - ApiKeyAuth: []
+      summary: Triggers decisioning process
+      tags:
+      - Decision Manager
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: X-Api-Key
+    type: apiKey
+swagger: "2.0"

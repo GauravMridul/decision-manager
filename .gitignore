@@ -1,0 +1,39 @@
+/logs/
+deployment.yml
+
+# macOS Finder metadata (auto-generated, not source code)
+.DS_Store
+**/.DS_Store
+
+# Salesforce DX CLI tooling cache (auto-generated, not source code)
+.sfdx/
+
+# Local debug / sample data files
+service_mapping
+sf_request.txt
+sf_response.txt
+esa_response.txt
+
+# PDF generation artifacts
+pdf_style.css
+generate_pdf.py
+*.html
+*.pdf
+
+# Reports
+dropped_fields_report.txt
+dropped_fields_report.xlsx
+
+# Profiling output
+*.prof
+mem.prof
+cpu.prof
+
+
+
+
+
+*.prof
+*.test
+logs/
+.DS_Store

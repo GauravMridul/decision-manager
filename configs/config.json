@@ -1,0 +1,85 @@
+{
+    "service.name": "decision-manager",
+    "Environment": "dev",
+    "server.port": ":8080",
+    "log.level": 1,
+    "log.directory": "logs",
+    "log.filename": "",
+    "log.console": true,
+    "log.maxsize": 100,
+    "log.maxbackups": 3,
+    "log.maxage": 30,
+    "log.compress": true,
+    "aws.region": "ap-south-1",
+    "X-Api-Key": "REPLACE_ME_API_KEY",
+    "JwksAudience": "your-audience-value",
+    "JwksIssuer": "your-issuer-value",
+    "JwksUrl": "https://your-jwks-endpoint",
+    "DmiBaseUrl": "http://localhost:8080",
+    "EsaBaseUrl": "http://localhost:8080",
+    "EsaApiKey": "REPLACE_ME_API_KEY",
+    "RestExecuteTimeoutInSeconds": 120,
+    "database.dialect": "postgres",
+    "database.username": "postgres",
+    "database.password": "postgres",
+    "database.host": "localhost",
+    "database.port": "5432",
+    "database.name": "decision-manager",
+    "database.maxIdleConnections": 10,
+    "database.maxOpenConnections": 100,
+    "database.connMaxLifetimeInHours": 1,
+    "database.shouldRunAutoMigrations": true,
+    "database.shouldRunGooseMigrations": true,
+    "server.max_parallel_dynamic_json_goroutines": 0,
+    "server.max_global_worker_goroutines": 0,
+    "server.max_parallel_dynamic_json_template_goroutines": 20,
+    "server.dynamic_json_expr_cache_max_entries": 500,
+    "server.shutdown.test_endpoint.enabled": true,
+    "server.shutdown.test_endpoint.delay_ms": 200,
+    "telemetry.enabled": false,
+    "telemetry.interval_seconds": 60,
+    "telemetry.memstats.enabled": true,
+    "telemetry.cache_sample.enabled": false,
+    "telemetry.cache_sample.interval_seconds": 300,
+    "telemetry.cache_sample.max_entries": 20,
+    
+    "mongo": {
+      "connectionString": "mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.5.0",
+      "username": "",
+      "password": "",
+      "host": "127.0.0.1:27017",
+      "minPoolSize": 5,
+      "maxPoolSize": 10,
+      "maxConnIdleTimeInMs": 60000,
+      "dbName": "audit-log",
+      "collections": {
+        "decisionManagerLog": "decision-manager-log"
+      }
+    },
+
+    "salesforce": {
+      "clientId": "REPLACE_ME_CLIENT_ID",
+      "clientSecret": "REPLACE_ME_CLIENT_SECRET",
+      "authEndpoint": "https://test.salesforce.com/services/oauth2/authorize",
+      "tokenEndpoint": "https://test.salesforce.com/services/oauth2/token",
+      "baseURL": "https://yourdomain.sandbox.my.salesforce.com",
+      "loginURL": "https://yourdomain.sandbox.my.salesforce.com",
+      "username": "user@example.com",
+      "password": "REPLACE_ME_PASSWORD",
+      "securityToken": "REPLACE_ME_SECURITY_TOKEN",
+      "apiVersion": "v64.0",
+      "compositeEndpoint": "/services/data/{apiVersion}/composite/graph"
+    },
+
+    "redis": {
+      "url": "localhost:6379",
+      "lockTtl": 90
+    },
+
+    "arrayProcessing": {
+      "memoryPoolThreshold": 20,
+      "enableMemoryPool": true,
+      "fallbackToSingleElement": true,
+      "skipInvalidArrayPaths": true
+    }
+  }

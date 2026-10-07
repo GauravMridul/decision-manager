@@ -1,0 +1,126 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: decision-manager
+  namespace: preonboarding
+  labels:
+    app: decision-manager
+    environment: production
+spec:
+#  replicas: 1
+  selector:
+    matchLabels:
+      app: decision-manager
+  template:
+    metadata:
+      labels:
+        app: decision-manager
+        environment: production
+    spec:
+      # Allow 90s for graceful shutdown (SIGTERM → drain HTTP, async log queue, Mongo) before SIGKILL
+      terminationGracePeriodSeconds: 90
+      serviceAccountName: secret-sa
+      nodeSelector:
+        node-type: preonboarding-node
+      tolerations:
+        - key: "workload"
+          value: "preonboarding"
+          effect: "NoSchedule"
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: node-type
+                    operator: In
+                    values:
+                      - preonboarding-node
+      containers:
+        - name: decision-manager
+          image: <IMAGE>
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: TZ
+              value: "Asia/Kolkata"
+            - name: ENVIRONMENT
+              value: "production"
+            - name: CONFIG_MODE
+              value: "kubernetes"
+            # Go runtime: soft heap limit to reduce OOM risk (leave headroom for stacks, runtime; ~90% of 1000Mi)
+            - name: GOMEMLIMIT
+              value: "900MiB"
+            - name: ENABLE_AWS_SECRETS
+              value: "true"
+            - name: AWS_REGION
+              value: "ap-south-1"
+            - name: SECRET_MANAGER_PREFIX
+              value: "dm-esa"
+          volumeMounts:
+            - name: config-volume
+              mountPath: /etc/config
+              readOnly: true
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "200m"
+            limits:
+              memory: "1000Mi"
+              cpu: "1000m"
+          livenessProbe:
+            httpGet:
+              path: decision-manager/health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: decision-manager/health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+      volumes:
+        - name: config-volume
+          configMap:
+            name: decision-manager-config
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: decision-manager-hpa
+  namespace: preonboarding
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: decision-manager
+  minReplicas: 2
+  maxReplicas: 7
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 70
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 70
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: decision-manager-service
+  namespace: preonboarding
+spec:
+  selector:
+    app: decision-manager
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+  type: ClusterIP
